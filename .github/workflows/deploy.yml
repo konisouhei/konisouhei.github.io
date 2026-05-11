@@ -1,12 +1,14 @@
 name: Deploy to GitHub Pages
 
 on:
-  # mainブランチにプッシュされた時に実行
+  # `main`ブランチにプッシュするたびにワークフローをトリガーします。
+  # 別のブランチを使用している場合は、`main`をそのブランチ名に置き換えてください。
   push:
-    branches: [main]
-  # 手動実行も可能にする
+    branches: [ main ]
+  # GitHub上のActionsタブからこのワークフローを手動で実行できます。
   workflow_dispatch:
 
+# このジョブがリポジトリをクローンし、ページデプロイメントを作成することを許可します。
 permissions:
   contents: read
   pages: write
@@ -17,11 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@v5
       - name: Install, build, and upload your site
-        uses: withastro/action@v3
-        # node-version: 20 # 必要に応じてNode.jsのバージョンを指定
+        uses: withastro/action@v5
+        # with:
+          # path: . # リポジトリ内のAstroプロジェクトのルート位置です。（オプション）
+          # node-version: 24 # サイトのビルドに使用するNodeのバージョンです。デフォルトは22です。（オプション）
+          # package-manager: pnpm@latest # 依存関係のインストールとサイトのビルドに使用するNodeパッケージマネージャーです。ロックファイルに基づいて自動検出されます。（オプション）
+          # build-cmd: pnpm run build # サイトをビルドするためのコマンドです。デフォルトでパッケージのbuildスクリプトを実行します。（オプション）
+        # env:
+          # PUBLIC_POKEAPI: 'https://pokeapi.co/api/v2' # 変数の値にはシングルクォートを使用してください。（オプション）
 
   deploy:
     needs: build
