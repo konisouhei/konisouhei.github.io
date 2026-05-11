@@ -1,0 +1,25 @@
+---
+const { pageTitle } = Astro.props; // タイトルを受け取る
+// Markdownファイルのフロントマターからデータを受け取る
+const { frontmatter } = Astro.props;
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> {/* typeを指定 */}
+
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <h1>{pageTitle}</h1>
+
+    <slot />
+     <!-- ページごとのコンテンツがここに入る -->
+  <ul>
+      <li><a href="/blog">ブログ一覧</a></li>
+      <li><a href="/tags">すべてのタグ一覧</a></li>
+			<li><a href="/">Home</a></li>
+	</ul>
+  </body>
+</html>

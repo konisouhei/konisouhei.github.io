@@ -1,0 +1,36 @@
+---
+// src/pages/blog/index.astro
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro'; // 例: 基本レイアウト
+
+const posts = await getCollection('blog');
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// URLを決定するヘルパー関数 (例)
+function getPostUrl(post) {
+  if (post.data.url) {
+    // フロントマターにurlがあれば、ルートからのパスを返す
+    return `/${post.data.url}/`;
+  }
+  // なければファイルパスに基づくデフォルトのパスを返す
+  // post.slug は 'html/html-custom' のようになる
+  return `/blog/${post.slug}/`;
+}
+---
+<BaseLayout title="ブログ一覧">
+  <h1>ブログ記事一覧だよ！全員集合！！</h1>
+  <ul>
+    {posts.map((post) => (
+      <li>
+        {/* getPostUrlヘルパーを使ってリンク先を決定 */}
+        <a href={getPostUrl(post)}>{post.data.title}</a>
+        <p>公開日: {post.data.pubDate.toLocaleDateString()}</p>
+        {post.data.description && <p>{post.data.description}</p>}
+      </li>
+    <hr />
+
+    ))}
+  
+  </ul>
+
+</BaseLayout>
