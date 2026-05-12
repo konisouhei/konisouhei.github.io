@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+# konisouhei.github.io
+=======
+>>>>>>> ef91a77 (Deploy Astro site)
 # Astro Starter Kit: Basics
 
 ```sh
@@ -44,3 +50,7 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+<<<<<<< HEAD
+=======
+>>>>>>> ed199cb (Add GitHub Actions workflow and update astro config)
+>>>>>>> ef91a77 (Deploy Astro site)
