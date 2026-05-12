@@ -54,3 +54,4 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 =======
 >>>>>>> ed199cb (Add GitHub Actions workflow and update astro config)
 >>>>>>> ef91a77 (Deploy Astro site)
+# konisouhei.github.io
