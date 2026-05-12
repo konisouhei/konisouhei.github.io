@@ -7,6 +7,10 @@ on:
     branches: [ main ]
   # このワークフローをGitHubのActionsタブから手動で実行できるようにします。
   workflow_dispatch:
+    
+env:
+  # ここに追加することで、このワークフロー内のすべてのアクションが Node.js 24 で実行されます
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 # このジョブがリポジトリをクローンし、ページデプロイメントを作成することを許可します。
 permissions:
@@ -37,6 +41,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        
-  env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
