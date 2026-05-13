@@ -3,6 +3,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro'; // 適切なレイアウトを指定
 import { Image } from 'astro:assets';
+import Img02 from '../../src/assets/images/img02.jpg';
 
 // 1. 'blog'コレクションの記事をすべて取得
 const allPosts = await getCollection('blog');
@@ -33,6 +34,8 @@ const pageTitle = "ようこそ！";
 <BaseLayout title={pageTitle}>
   <h1>{pageTitle}</h1>
   <p>このサイトのトップページです。</p>
+
+  <Image src={Img02} alt=""/>
   <Image src="/images/img01.jpg" width="800" height="533" alt=""/>
 
 <h1 class="text-3xl font-bold text-blue-600 mb-4">ようこそ！</h1>
