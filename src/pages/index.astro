@@ -2,6 +2,7 @@
 // src/pages/index.astro
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro'; // 適切なレイアウトを指定
+import { Image } from 'astro:assets';
 
 // 1. 'blog'コレクションの記事をすべて取得
 const allPosts = await getCollection('blog');
@@ -23,6 +24,7 @@ function getPostUrl(post) {
   }
   // なければファイルパスに基づくデフォルトのパスを返す
   return `/blog/${post.slug}/`;
+
 }
 
 // 他のトップページ用データなど...
@@ -31,14 +33,13 @@ const pageTitle = "ようこそ！";
 <BaseLayout title={pageTitle}>
   <h1>{pageTitle}</h1>
   <p>このサイトのトップページです。</p>
+  <Image src="/images/img01.jpg" width="800" height="533" alt=""/>
 
 <h1 class="text-3xl font-bold text-blue-600 mb-4">ようこそ！</h1>
 <p class="text-gray-700 leading-relaxed">これはTailwind CSSでスタイルされた段落です。</p>
 <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
   クリック！
 </button>
-
-<img style="width: 100%; height: auto;" src="../src/assets/images/post1.jpg" alt="画像">
 
   {/* ↓ ここから新着記事一覧を追加 */}
   <h2>新着記事</h2>
@@ -55,6 +56,5 @@ const pageTitle = "ようこそ！";
   </ul>
   {/* ↑ ここまで新着記事一覧 */}
   <hr />
-
   {/* 他のトップページのコンテンツ... */}
 </BaseLayout>

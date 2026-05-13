@@ -1,4 +1,6 @@
 ---
+import Header from '../components/Header.astro'; // ← Headerコンポーネントをインポート
+import Footer from '../components/Footer.astro'; // (例：フッターもコンポーネント化している場合)
 import '../styles/global.css'; // ← この行を追加してCSSファイルを読み込む
 const { pageTitle } = Astro.props; // タイトルを受け取る
 // Markdownファイルのフロントマターからデータを受け取る
@@ -10,19 +12,16 @@ const { title } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> {/* typeを指定 */}
-
     <title>{pageTitle}</title>
     <title>{title}</title>
   </head>
-  <body>
+  <body class="flex flex-col min-h-screen"> {/* Tailwindでフッターを最下部に固定する例 */}
+    <Header />
     <h1>{pageTitle}</h1>
 
     <slot />
      <!-- ページごとのコンテンツがここに入る -->
-  <ul>
-      <li><a href="/blog">ブログ一覧</a></li>
-      <li><a href="/tags">すべてのタグ一覧</a></li>
-			<li><a href="/">Home</a></li>
-	</ul>
+
+    <Footer /> {/* 例：フッターコンポーネント */}
   </body>
 </html>
