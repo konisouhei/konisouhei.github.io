@@ -1,0 +1,11 @@
+---
+interface Props {
+  title: string;
+  tagline?: string; // オプショナルな説明文
+}
+const { title, tagline } = Astro.props;
+---
+<section class="text-center py-12 px-4 bg-gradient-to-r from-blue-50 to-indigo-100"> {/* スタイル例 */}
+  <h1 class="text-4xl md:text-5xl font-bold text-blue-800 mb-4">{title}</h1>
+  {tagline && <p class="text-lg text-gray-600 max-w-2xl mx-auto">{tagline}</p>}
+</section>

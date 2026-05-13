@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+
+// 4. 個別記事ページへのURLを生成するヘルパー関数 (前の手順で作成したものを再利用または同様のロジックを記述)
+function getPostUrl(post) {
+  if (post.data.url) {
+    // フロントマターにurlがあれば、ルートからのパスを返す
+    return `/${post.data.url}/`;
+  }
+  // なければファイルパスに基づくデフォルトのパスを返す
+  return `/blog/${post.slug}/`;
+
+}
+
+import type { CollectionEntry } from 'astro:content'; // 型定義をインポート
+
+// このコンポーネント内で記事データを取得・処理
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) =>
+  b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const recentPosts: CollectionEntry<'blog'>[] = sortedPosts.slice(0, 5); // 型を明示
+---
+<section class="py-8">
+  <h2 class="text-2xl font-semibold mb-6 text-center">新着記事</h2>
+  <ul class="space-y-4 max-w-3xl mx-auto">
+    {recentPosts.map((post) => (
+      <li class="border-b pb-4">
+        <a href={getPostUrl(post)} class="text-xl text-blue-700 hover:underline font-medium">
+          {post.data.title}
+        </a>
+        <div class="text-sm text-gray-500 mt-1">
+          公開日: {post.data.pubDate.toLocaleDateString()}
+        </div>
+        {post.data.description && (
+          <p class="text-gray-600 mt-2">{post.data.description}</p>
+        )}
+      </li>
+    ))}
+  </ul>
+</section>
