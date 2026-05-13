@@ -1,69 +1,77 @@
 ---
 // src/pages/blog/[...page].astro
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro'; // 適切なレイアウトを指定
+import type { CollectionEntry } from 'astro:content'; // CollectionEntryをインポート
+import type { Page } from 'astro'; // Page型をインポート(必要に応じて)
+// import { getPostUrl } from '../../utils/url'; // ← PostListItemに移動したので削除
+import BaseLayout from '../../layouts/BaseLayout.astro'; // ← レイアウトをBaseLayoutに変更(例)
+import PostListItem from '../../components/PostListItem.astro'; // ← 作成したコンポーネントをインポート
 
 export async function getStaticPaths({ paginate }) {
-  // 1. 'blog'コレクションの記事をすべて取得
   const allPosts = await getCollection('blog');
-
-  // 2. 公開日 (pubDate) の新しい順に記事をソート (ページ分割する前にソートする)
   const sortedPosts = allPosts.sort((a, b) =>
     b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
-
-  // 3. paginate関数でページ分割 (1ページあたり5件)
-  //    ソート済みの記事リストを渡す
   return paginate(sortedPosts, { pageSize: 5 });
 }
 
-// paginateから渡された現在のページ情報を受け取る
-const { page } = Astro.props;
-
-// 個別記事ページへのURLを生成するヘルパー関数 (他ページで使っているものを流用)
-function getPostUrl(post) {
-  if (post.data.url) {
-    return `/${post.data.url}/`;
-  }
-  return `/blog/${post.slug}/`;
+// Page型の定義 (前の手順で作成した CustomPageData などを使用)
+interface CustomPageData {
+  data: CollectionEntry<'blog'>[];
+  start: number;
+  end: number;
+  size: number;
+  total: number;
+  currentPage: number;
+  lastPage: number;
+  url: {
+    current: string;
+    next?: string;
+    prev?: string;
+  };
 }
+interface Props {
+  page: CustomPageData;
+}
+const { page } = Astro.props as Props;
 ---
-
 <BaseLayout title={`ブログ記事一覧 - ${page.currentPage}ページ目`}>
-  <h1>ブログ記事一覧</h1>
-  <p>{page.start + 1}件目から{page.end + 1}件目を表示 ({page.total}件中)</p>
+  <div class="max-w-3xl mx-auto px-4 py-20"> {/* コンテンツ全体のコンテナ */}
+    <h1 class="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-800">ブログ記事一覧</h1>
+    <p class="text-center text-gray-600 mb-8">{page.start + 1}件目から{page.end + 1}件目を表示 ({page.total}件中)</p>
 
-  <ul>
-    {/* page.data に現在のページの5件分の記事が入っている */}
-    {page.data.map((post) => (
-      <li>
-        <a href={getPostUrl(post)}>{post.data.title}</a>
-        <span style="font-size: 0.8em; margin-left: 8px;">
-          ({post.data.pubDate.toLocaleDateString()})
+    <ul class="space-y-8"> {/* 記事間のスペース */}
+      {/* page.data を map して PostListItem コンポーネントを呼び出す */}
+      {page.data.map((post) => (
+        <PostListItem post={post} />
+      ))}
+    </ul>
+
+    {/* ページネーションリンク (Tailwindでスタイル付け) */}
+    <nav aria-label="ページネーション" class="flex justify-center items-center space-x-4 mt-12 mb-8">
+      {page.url.prev ? (
+        <a href={page.url.prev} class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition duration-200">
+          &larr; 前のページへ
+        </a>
+      ) : (
+        <span class="px-4 py-2 border border-gray-200 rounded text-gray-400 cursor-not-allowed">
+          &larr; 前のページへ
         </span>
-      </li>
-    ))}
-  </ul>
+      )}
 
-  {/* ↓ ここからページネーションリンクを追加 */}
-  <nav aria-label="ページネーション">
-    {/* 前のページへのリンク (page.url.prevが存在する場合のみ表示) */}
-    {page.url.prev ? (
-      <a href={page.url.prev}>&larr; 前のページへ</a>
-    ) : (
-      <span>&larr; 前のページへ</span> // リンク無効表示 (任意)
-    )}
+      <span class="text-gray-700">
+        {page.currentPage} / {page.lastPage} ページ
+      </span>
 
-    <span style="margin: 0 1em;">
-      {page.currentPage} / {page.lastPage} ページ
-    </span>
-
-    {/* 次のページへのリンク (page.url.nextが存在する場合のみ表示) */}
-    {page.url.next ? (
-      <a href={page.url.next}>次のページへ &rarr;</a>
-    ) : (
-      <span>次のページへ &rarr;</span> // リンク無効表示 (任意)
-    )}
-  </nav>
-  {/* ↑ ここまでページネーションリンク */}
+      {page.url.next ? (
+        <a href={page.url.next} class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition duration-200">
+          次のページへ &rarr;
+        </a>
+      ) : (
+        <span class="px-4 py-2 border border-gray-200 rounded text-gray-400 cursor-not-allowed">
+          次のページへ &rarr;
+        </span>
+      )}
+    </nav>
+  </div>
 </BaseLayout>
