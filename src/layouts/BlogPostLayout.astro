@@ -1,6 +1,7 @@
 ---
 // レイアウトコンポーネント (BlogPostLayout.astro)
 // Markdownファイルのフロントマターからデータを受け取る
+import '../styles/global.css'; // ← この行を追加してCSSファイルを読み込む
 const { frontmatter } = Astro.props;
 ---
 <html lang="ja">

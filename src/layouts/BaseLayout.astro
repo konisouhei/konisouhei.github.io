@@ -1,7 +1,9 @@
 ---
+import '../styles/global.css'; // ← この行を追加してCSSファイルを読み込む
 const { pageTitle } = Astro.props; // タイトルを受け取る
 // Markdownファイルのフロントマターからデータを受け取る
 const { frontmatter } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <html lang="ja">
@@ -10,6 +12,7 @@ const { frontmatter } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> {/* typeを指定 */}
 
     <title>{pageTitle}</title>
+    <title>{title}</title>
   </head>
   <body>
     <h1>{pageTitle}</h1>
