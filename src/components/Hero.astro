@@ -4,8 +4,12 @@ interface Props {
   tagline?: string; // オプショナルな説明文
 }
 const { title, tagline } = Astro.props;
+import { Image } from 'astro:assets';
+import Img02 from '../../src/assets/images/img02.jpg';
 ---
 <section class="text-center py-12 px-4 bg-gradient-to-r from-blue-50 to-indigo-100"> {/* スタイル例 */}
   <h1 class="text-4xl md:text-5xl font-bold text-blue-800 mb-4">{title}</h1>
   {tagline && <p class="text-lg text-gray-600 max-w-2xl mx-auto">{tagline}</p>}
 </section>
+
+<Image src={Img02} alt=""/>
