@@ -1,62 +1,141 @@
 ---
-// src/pages/[...slug].astro (新規作成、src/pages/blog/[id].astro は削除)
-import { getCollection, getEntry } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro'; // レイアウトへのパスが変わることに注意
-import { Image } from 'astro:assets'; // ← Imageコンポーネントをインポート
+// src/pages/[...slug].astro
+import { getCollection, getEntry, render } from 'astro:content'; // ★ render を追加
+// import type { CollectionEntry } from 'astro:content'; // 型定義をインポート
+import BlogPostLayout from '../layouts/BlogPostLayout.astro';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map((post) => {
-    // params.slug に設定する値を決定
+  // ↓ 全記事データをソートしておく (日付順など)
+  const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  return sortedPosts.map((post, index) => { // map に index を追加
     let slugPath;
     if (post.data.url) {
-      // フロントマターのurlがあれば、それをパスとする
       slugPath = post.data.url;
     } else {
-      // なければファイルパスに基づくパス (例: 'blog/html/html-custom')
-      // post.id は 'blog/html/html-custom.md' のようなので、
-      // ディレクトリ部分 + ファイル名(拡張子なし) を使う
-      slugPath = post.id.replace(/\.md$/, ''); // .mdを除去
+      slugPath = post.id.replace(/\.md$/, '');
     }
 
+    // ↓ 前後の記事情報を props に含める
+    const prevPost = index > 0 ? sortedPosts[index - 1] : null;
+    const nextPost = index < sortedPosts.length - 1 ? sortedPosts[index + 1] : null;
+
     return {
-      // params.slug は Astro.params.slug でアクセスでき、
-      // URL の '/.../' の部分の文字列になる
       params: { slug: slugPath },
-      props: { post }, // 記事データを渡す
+      props: {
+        post,
+        prevPost: prevPost ? { slug: prevPost.slug, title: prevPost.data.title, url: prevPost.data.url } : null, // 必要な情報だけ渡す
+        nextPost: nextPost ? { slug: nextPost.slug, title: nextPost.data.title, url: nextPost.data.url } : null, // 必要な情報だけ渡す
+      },
     };
   });
 }
 
-import { render } from 'astro:content'; // render をインポート（修正追加分）
+// 1. propsの型定義を追加
+interface NeighborPost {
+  id: string;
+  title: string;
+  url?: string;
+}
 
-const { post } = Astro.props;
-const { Content } = await render(post); // post を引数として渡す
+interface Props {
+  post: CollectionEntry<'blog'>;
+  prevPost: NeighborPost | null;
+  nextPost: NeighborPost | null;
+}
+
+// 2. 定義した型が自動で適用されます
+const { post, prevPost, nextPost } = Astro.props;
+
+// getPostUrl ヘルパー関数 (他で定義・インポートしている場合)
+import { getPostUrl } from '../utils/url'; 
+
+// アイキャッチ画像の有無を確認
+const hasFeatureImage = post.data.featureImage && post.data.featureImageAlt;
+
+const { Content } = await render(post);
 ---
-<BaseLayout title={post.data.title}>
-  <article>
-    <h1>{post.data.title}</h1>
 
-    {/* ↓ アイキャッチ画像を表示 */}
-    {post.data.featureImage && post.data.featureImageAlt && (
-      <Image
-        src={post.data.featureImage}
-        alt={post.data.featureImageAlt}
-        width={720}  {/* 表示したい幅を指定 */}
-        aspectRatio="16:9" {/* アスペクト比を指定すると高さは自動計算されることが多い */}
-        format="webp" {/* 最適なフォーマットを指定 (任意) */}
-        quality={80} {/* 画質を指定 (任意) */}
-        loading="lazy" {/* 遅延読み込み (任意) */}
-        decoding="async" {/* 非同期デコード (任意) */}
-      />
-    )}
+<BlogPostLayout title={post.data.title}>
+  <article class="max-w-3xl mx-auto px-4 py-8"> {/* 記事全体のコンテナと左右パディング */}
 
-    {/* ↑ ここまで */}
-    <p>公開日: {post.data.pubDate.toLocaleDateString()}</p>
-    {post.data.tags && (
-      <p>タグ: {post.data.tags.join(', ')}</p>
-    )}
-    <hr />
-    <Content />
+    {/* ===== 記事ヘッダー ===== */}
+    <header class="mb-8">
+      {/* アイキャッチ画像 (ある場合のみ) */}
+      {hasFeatureImage && (
+        <div class="mb-6"> {/* 画像下のマージン */}
+          <Image
+            src={post.data.featureImage}
+            alt={post.data.featureImageAlt}
+            width={720}
+            aspectRatio={16/9}
+            format="webp"
+            quality={80}
+            class="rounded-lg shadow-md" {/* Tailwind クラス */}
+          />
+        </div>
+      )}
+      {/* 記事タイトル */}
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{post.data.title}</h1>
+      {/* メタ情報 (日付、タグ) */}
+      <div class="flex flex-wrap items-center text-sm text-gray-500 space-x-4">
+        <span>公開日: {post.data.pubDate.toLocaleDateString()}</span>
+        {post.data.tags && post.data.tags.length > 0 && (
+          <div class="flex items-center space-x-2">
+            <span>タグ:</span>
+            {post.data.tags.map(tag => (
+              <a href={`/tags/${tag}/`} class="bg-gray-200 rounded-full px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-300">
+                {tag}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <hr class="my-8 border-gray-300"/> {/* ヘッダーと本文の区切り線 */}
+
+    {/* ===== 記事ボディ ===== */}
+    {/* proseクラスを付けてCSSでスタイルを当てる */}
+    <div class="prose prose-lg max-w-none">
+      <Content /> {/* Markdown本文 */}
+    </div>
+
+    <hr class="my-12 border-gray-300"/> {/* 本文とフッターの区切り線 */}
+
+    {/* ===== 記事フッター (前後の記事ナビゲーション) ===== */}
+    <footer class="flex justify-between items-center">
+      {/* 前の記事へのリンク */}
+      <div>
+        {prevPost ? (
+          <a href={getPostUrl(prevPost)} class="text-blue-600 hover:underline flex items-center group">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+            <span class="text-sm font-medium">前の記事:</span>
+            <span class="ml-1 hidden md:inline">{prevPost.title}</span>
+          </a>
+        ) : (
+          <span class="text-gray-400 text-sm">これが最初の記事です</span>
+        )}
+      </div>
+      {/* 次の記事へのリンク */}
+      <div>
+        {nextPost ? (
+          <a href={getPostUrl(nextPost)} class="text-blue-600 hover:underline flex items-center group text-right">
+            <span class="text-sm font-medium">次の記事:</span>
+            <span class="ml-1 hidden md:inline">{nextPost.title}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1">
+               <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </a>
+        ) : (
+          <span class="text-gray-400 text-sm">これが最新の記事です</span>
+        )}
+      </div>
+    </footer>
+
   </article>
-</BaseLayout>
+</BlogPostLayout>
