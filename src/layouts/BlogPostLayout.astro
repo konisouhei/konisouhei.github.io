@@ -1,8 +1,9 @@
 ---
 // レイアウトコンポーネント (BlogPostLayout.astro)
+import Header from '../components/Header.astro'; // ← Headerコンポーネントをインポート
+import Footer from '../components/Footer.astro'; // (例：フッターもコンポーネント化している場合)
 // Markdownファイルのフロントマターからデータを受け取る
 import '../styles/global.css'; // ← この行を追加してCSSファイルを読み込む
-
 // frontmatter ではなく、直接 title を受け取る
 const { title } = Astro.props;
 ---
@@ -14,18 +15,14 @@ const { title } = Astro.props;
 
     <title>{title}</title> {/* Markdownのタイトルを表示 */}
 </head>
-<body>
-    <header>
-        <p>My Astro Blog</p> {/* 例:共通ヘッダー */}
-    </header>
+  <body class="flex flex-col min-h-screen"> {/* Tailwindでフッターを最下部に固定する例 */}
+    <Header /> {/* 例:共通ヘッダー */}
     <main>
         <h1>{title}</h1> {/* Markdownのタイトルを表示 */}
         <article>
             <slot /> {/* ← ここにMarkdown本文の内容が挿入される */}
         </article>
     </main>
-    <footer>
-        <p>© My Blog</p> {/* 例:共通フッター */}
-    </footer>
+<Footer /> {/* 例：フッターコンポーネント */}
 </body>
 </html>
