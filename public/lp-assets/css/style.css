@@ -1,0 +1,444 @@
+@charset "UTF-8";
+@import url("/lp-assets/css/grid.css");
+
+:root { /* 色変更される場合は、#以降のカラーコードを変更してください IE非対応 */
+    --base-color: #000;
+    --link-color: #666;
+    --linkhover-color: #999;
+    --back-color: #f7f7f7;
+    --border-color: #ccc;
+    --white-color: #fff;
+    --nav-color: #333;
+}
+body {
+    background: var(--white-color); 
+    color: var(--base-color);
+}
+
+img {
+	max-width:100%;
+	height: auto;/*高さ自動*/
+}
+a {
+    display:block;
+    color: var(--link-color);
+    text-decoration-line: none;
+}
+a:hover { 
+    color: var(--linkhover-color);
+}
+h2 {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    text-align: center;
+}
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background-color: var(--link-color);   
+}
+.button {
+    margin: 1rem;
+}
+
+/*ヘッダー
+-------------------------------------*/
+.header {
+	display: flex;
+    flex-direction: row;
+    padding: 2rem 0 0 0;
+    margin-bottom: 2rem;
+}
+.sitetitle {
+    font-size: 3.0rem;
+}
+.header-box {
+	margin-left: auto;
+	margin-top: 8px;
+}
+.contact-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 15px;
+    width: 200px;
+    font-size: 16px;
+    text-decoration: none;
+    background-color: var(--link-color);   
+    color: var(--white-color);
+    box-shadow: 1px 1px var(--base-color);
+}
+.contact-button::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid var(--white-color);
+    border-right: 2px solid var(--white-color);
+    transform: rotate(45deg);
+}
+.contact-button:hover {
+    opacity: 0.9;
+    color: var(--white-color);
+}
+/*スマホ用メニュー
+-------------------------------------*/	
+.spnavi {
+    display: none;
+}
+nav ul {
+	display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    list-style: none;
+	margin: 1rem 0 0 0;
+}
+nav li {
+	flex: 1 0 auto;
+}
+nav li a {
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+}
+nav a:hover {
+    background-color: var(--back-color);   
+}
+nav a {
+    padding: 0.5rem;
+    color: var(--nav-color);
+}
+
+@media screen and (min-width: 769px){
+/* PC時はMENUボタンを非表示 */
+#open,#close {
+    display: none !important;
+}
+
+#navi {
+    display: block !important;
+}
+}
+
+@media screen and (max-width: 768px){
+.header {
+	flex-direction: column;
+    margin-bottom: 10px;
+}
+.header #open,#close  {
+    position: absolute;
+    top: 25px;
+    right: 12px;
+}
+nav ul {
+	flex-direction: column;
+}
+.header li {
+	padding-top: 0;
+}
+/* スマホ時はMENUボタンを表示 */
+#open {
+    display: block;
+    background: url(/lp-assets/img/button.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 50px;
+    height: 50px;
+    border: none;
+    position: absolute;
+    top: 25px;
+    right: 12px;
+}
+#close  {
+    display: block;
+    background: url(/lp-assets/img/button2.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 50px;
+    height: 50px;
+    border: none;
+    position: absolute;
+    top: 25px;
+    right: 12px;
+}
+/* スマホ時はメニューを非表示 */
+#navi {
+    display: none;
+}
+}
+    
+/*メイン画像
+-------------------------------------*/
+#mainimg {
+    width: 100%;
+}
+#mainimg h1 {
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 2;
+    text-align: center;
+    color: var(--white-color);
+    text-shadow: 1px 2px 3px var(--link-color); 
+}
+
+/*メインコンテンツ
+-------------------------------------*/
+main {
+    margin: 5rem 0 0 0;
+}
+section {
+	margin: 3rem 0;
+	padding: 3rem 0;
+}
+.gray-back {
+	background-color: var(--back-color);
+    /*background: url('../img/gray-back.jpg'); gray-back.jpg背景画像を使用したい時にオンにしてください*/
+    background-size: cover;
+}
+
+/*ニュース
+-------------------------------------*/
+.news {
+    margin: 0 auto;
+    max-width: 980px;
+    padding: 2rem;
+}
+.news-list{
+    list-style: none;
+  }
+.news-list .item, .item p {
+    margin-bottom: 0;
+  }
+.news-list .item a{
+    display: flex;
+    flex-wrap: wrap;
+    color: var(--nav-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem 0;
+}
+.news-list .item:first-child a{
+    border-top: 1px solid var(--border-color);
+}
+.news-list .item .date{
+    min-width: 120px;
+    color: var(--link-color);
+}
+.news-list .item a:hover .title{
+    color: var(--base-color);
+}
+
+/*キャッチコピー
+-------------------------------------*/
+.catch {
+    text-align: center;
+    line-height: 1.7;
+}
+.center {
+	text-align: center;
+	margin-bottom: 4rem;
+}
+
+/* Googleマップ
+-------------------------------------*/
+.gmap {
+	margin: 3rem 0;
+}
+
+/*フッター
+-------------------------------------*/
+footer {
+    background-color: var(--back-color); 
+    /*background: url('../img/gray-back.jpg'); gray-back.jpg背景画像を使用したい時にオンにしてください*/
+    background-size: cover;
+    padding: 5rem 0;
+}
+footer h4 {
+    position: relative;
+    padding-bottom: 1rem;
+    width: 100%;
+    border-bottom: 2px solid var(--border-color);
+}
+footer h4::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 70px;
+    height: 2px;
+    background-color: var(--link-color);
+}
+/*電話
+-------------------------------------*/
+a.tel {
+    display: inline-block;
+}
+@media screen and (min-width: 768px){
+a[href*="tel:"] { /* PC時は電話番号無効 */
+    pointer-events: none;
+    cursor: default;
+}
+}
+/*お問い合わせ
+-------------------------------------*/
+.contact-box {
+	border: 1px solid var(--border-color);
+	text-align: center;
+	padding: 2rem 0;
+}
+.table {
+	margin: 4rem 0;
+}
+.table th {
+	width: 150px;
+}
+input[type="email"], input[type="number"], input[type="search"], input[type="text"], input[type="tel"], input[type="url"], input[type="password"], textarea { 
+    background-color: var(--white-color);
+}
+/*コピーライト
+-------------------------------------*/
+.copyright {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: var(--link-color);
+}
+.copyright a {
+    color: var(--white-color);
+    text-decoration: none;
+	display: inline;
+}
+
+/*ページトップへ戻るボタン
+-------------------------------------*/
+#pagetop {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: block;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    background: var(--white-color);
+    border: 1px solid var(--linkhover-color);
+    padding-top: 30px;
+    text-align: center;
+    text-decoration: none;
+    opacity: 0.8;
+}
+#pagetop::after{
+    content: "";
+    display: block;
+    border-top: 2px solid var(--base-color);
+    border-right: 2px solid var(--base-color);
+    width: 25%;
+    height: 25%;
+    top: 45%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    position: absolute;
+    transform: rotate(-45deg);
+}
+#pagetop:hover{
+    opacity: 0.5;
+}
+
+/* 下層ページヘッダー
+-------------------------------------*/
+.subimg {
+    height: 350px;
+    background: url('/lp-assets/img/subimg.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    margin-bottom: 2rem;
+}
+.subimg h1 {
+    height: 350px;
+    line-height: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--white-color);
+    text-shadow: 1px 2px 3px var(--link-color); 
+    margin: 0;
+}
+/* パンくずリスト
+-----------------------------------*/
+.breadcrumb {
+    margin: 0 0 1em 0;
+    padding: 0;	
+}
+.breadcrumb li {
+    list-style-type: none;
+}
+.breadcrumb li a {
+    display: inline-block;
+    color: var(--link-color);
+}
+
+/* 幅768px以下の表示
+-------------------------------------*/
+@media screen and (max-width: 768px){
+	
+/*ヘッダー
+-------------------------------------*/
+.header-box {
+    display: none;
+}	
+/*スマホ用メニュー
+-------------------------------------*/	
+.spnavi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 15px;
+    text-decoration: none;
+    background-color: var(--link-color);   
+    color: var(--white-color);
+}
+.spnavi a {
+    display: inline-block;
+    color: var(--white-color);
+}
+.spnavi a:hover {
+    opacity: 0.9;
+    background-color: var(--link-color);   
+    color: var(--white-color);
+}
+.spnavi::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid var(--white-color);
+    border-right: 2px solid var(--white-color);
+    transform: rotate(45deg);
+}
+/*メイン画像
+-------------------------------------*/
+#mainimg h1 {
+    height: 350px;
+}
+/*ニュース
+-------------------------------------*/
+.news-list .item .title{
+    margin-top: 1em;
+}
+/*お問い合わせ
+-------------------------------------*/
+.table th {
+	width: 100%;
+	display: block;
+}	
+.table td {
+	display: block;
+}
+}
